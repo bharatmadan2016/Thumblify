@@ -3,10 +3,10 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { navlinks } from "../data/navlinks";
 import type { INavLink } from "../types";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     
 
@@ -30,8 +30,7 @@ export default function Navbar() {
                 
                 </div>
 
-                <button onClick{()=> navigate('/login')} className="hidden
-                 md:block px-6 py-2.5 bg-pink-600 hover:bg-pink-700 active:scale-95 transition-all rounded-full">
+                <button onClick={() => navigate('/login')} className="hidden md:block px-6 py-2.5 bg-pink-600 hover:bg-pink-700 active:scale-95 transition-all rounded-full">
                     Get Started
                 </button>
                 <button onClick={() => setIsOpen(true)} className="md:hidden">

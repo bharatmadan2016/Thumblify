@@ -1,10 +1,10 @@
-'use client'
 import { CheckIcon, ChevronRightIcon, VideoIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import TiltedImage from "../components/TiltImage";
 import { motion } from "motion/react";
 
 export default function HeroSection() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const specialFeatures = [
         "No design skill needed",
         "Fast generation",
