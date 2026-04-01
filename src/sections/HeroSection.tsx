@@ -1,6 +1,6 @@
 import { CheckIcon, ChevronRightIcon, VideoIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import TiltedImage from "../components/TiltImage";
+import TiltImage from "../components/TiltImage";
 import { motion } from "motion/react";
 
 export default function HeroSection() {
@@ -71,7 +71,7 @@ export default function HeroSection() {
                     </motion.p>
                 ))}
             </div>
-            <TiltedImage />
+            <TiltImage />
         </div>
     );
 }

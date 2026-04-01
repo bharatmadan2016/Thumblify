@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { navlinks } from "../data/navlinks";
 import type { INavLink } from "../types";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -23,11 +23,13 @@ export default function Navbar() {
                </Link>
 
                 <div className="hidden md:flex items-center gap-8 transition duration-500">
-                    <Link to='/' className="hover:text-pink-300 transition">Home</Link>
+                    {navlinks.map((link: INavLink, index: number) => (
+                        <Link key={index} to={link.href} className="hover:text-pink-300 transition">
+                            {link.name}
+                        </Link>
+                    ))}
                     <Link to='/generate' className="hover:text-pink-300 transition">Generate</Link>
                     <Link to='/my-generation' className="hover:text-pink-300 transition">My Generations</Link>
-                    <Link to='#' className="hover:text-pink-300 transition">My Contact</Link>
-                
                 </div>
 
                 <button onClick={() => navigate('/login')} className="hidden md:block px-6 py-2.5 bg-pink-600 hover:bg-pink-700 active:scale-95 transition-all rounded-full">
@@ -38,12 +40,15 @@ export default function Navbar() {
                 </button>
             </motion.nav>
 
-            <div className={`fixed inset-0 z-100 bg-black/40 backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-400 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
-             <Link onClick={() => setIsOpen(false)}  to='/'>Home</Link>
-             <Link onClick={() => setIsOpen(false)}  to='/generate'>Generate</Link>
-            <Link onClick={() => setIsOpen(false)}  to='/my-generation'>My Generations</Link>
-            <Link onClick={() => setIsOpen(false)}  to='#'>My Contact</Link>
-            <Link onClick={() => setIsOpen(false)}  to='/login'>Login</Link>
+            <div className={`fixed inset-0 z-[100] bg-black/40 backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-400 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+                {navlinks.map((link: INavLink, index: number) => (
+                    <Link key={index} onClick={() => setIsOpen(false)} to={link.href}>
+                        {link.name}
+                    </Link>
+                ))}
+                <Link onClick={() => setIsOpen(false)} to='/generate'>Generate</Link>
+                <Link onClick={() => setIsOpen(false)} to='/my-generation'>My Generations</Link>
+                <Link onClick={() => setIsOpen(false)} to='/login'>Login</Link>
             <button onClick={() => setIsOpen(false)} className="active:ring-3 active:ring-white aspect-square size-10 p-1 items-center justify-center bg-pink-600 hover:bg-pink-700 transition text-white rounded-md flex">
                     <XIcon />
                 </button>
