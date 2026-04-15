@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+    --font-poppins: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+    font-family: var(--font-poppins);
+    @apply bg-black text-white text-sm antialiased;
+}
+
+body::selection {
+    @apply bg-pink-600 text-white;
+}
+
+button {
+    @apply cursor-pointer;
+}
+
+.move-gradient {
+    background-image: linear-gradient(to right, #ec4899, #f472b6);
+    background-size: 200% 100%;
+    animation: movegradient 5s infinite;
+}
+
+@keyframes movegradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
