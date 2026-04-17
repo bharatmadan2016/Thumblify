@@ -38,30 +38,30 @@ async function testFullPipelineWithMockAI() {
         console.log("1. Simulating AI Failure -> Fetching Fallback...");
         const fallbackResponse = await axios.get(IMAGE_FALLBACK_URL, { responseType: 'arraybuffer' });
         const imageBytes = Buffer.from(fallbackResponse.data);
-        console.log("✅ Fallback fetched. Bytes:", imageBytes.length);
+        console.log(" Fallback fetched. Bytes:", imageBytes.length);
 
         console.log("2. Saving to Temp Folder...");
         const tempDir = path.join(process.cwd(), 'temp');
         if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
         tempPath = path.join(tempDir, `test_${uuidv4()}.png`);
         fs.writeFileSync(tempPath, imageBytes);
-        console.log("✅ Saved to:", tempPath);
+        console.log(" Saved to:", tempPath);
 
         console.log("3. Running Analysis...");
         const analysis = await runAnalysis(tempPath);
-        console.log("✅ Analysis Result:", JSON.stringify(analysis));
+        console.log("Analysis Result:", JSON.stringify(analysis));
 
         console.log("4. Uploading to Cloudinary...");
         const upload = await cloudinary.uploader.upload(tempPath, {
             folder: 'test_pipeline',
             context: { title: "Test Pipeline", source: "Mock", ctr: (analysis.ctr_score || 0).toString() }
         });
-        console.log("✅ Cloudinary Success. URL:", upload.secure_url);
+        console.log("Cloudinary Success. URL:", upload.secure_url);
 
         console.log("✨ ALL PIPELINE STEPS SUCCESSFUL!");
 
     } catch (error) {
-        console.error("❌ Pipeline Failed at some step:");
+        console.error("Pipeline Failed at some step:");
         console.error(error);
     } finally {
         if (tempPath && fs.existsSync(tempPath)) {

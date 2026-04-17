@@ -7,7 +7,7 @@ dotenv.config();
 const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 async function testGeneration() {
-    console.log("🚀 Starting Final Validation for gemini-2.5-flash-image...");
+    console.log("Starting Final Validation for gemini-2.5-flash-image...");
     try {
         const prompt = "A vibrant oil painting of a futuristic cityscape at sunset, ultra realistic, cinematic lighting";
         
@@ -27,13 +27,13 @@ async function testGeneration() {
         console.log("2. Inspecting Response...");
         const candidate = response.candidates?.[0];
         if (!candidate) {
-            console.error("❌ No candidates found. Response:", JSON.stringify(response, null, 2));
+            console.error("No candidates found. Response:", JSON.stringify(response, null, 2));
             return;
         }
 
         const parts = candidate.content?.parts;
         if (!parts) {
-            console.error("❌ No parts found in candidate.");
+            console.error("No parts found in candidate.");
             return;
         }
 
@@ -42,23 +42,23 @@ async function testGeneration() {
 
         for (const part of parts) {
             if (part.inlineData) {
-                console.log("✅ Image data found! Saving to test_output.png...");
+                console.log("Image data found! Saving to test_output.png...");
                 const buffer = Buffer.from(part.inlineData.data, "base64");
                 fs.writeFileSync("test_output.png", buffer);
                 imageFound = true;
             } else if (part.text) {
-                console.log("📝 Text found instead:", part.text);
+                console.log("Text found instead:", part.text);
             }
         }
 
         if (!imageFound) {
-            console.log("⚠️ No image found in any part.");
+            console.log("No image found in any part.");
         } else {
             console.log("✨ Test Successful! Image saved.");
         }
 
     } catch (error) {
-        console.error("❌ Test Failed with error:");
+        console.error("Test Failed with error:");
         console.error(error);
     }
 }

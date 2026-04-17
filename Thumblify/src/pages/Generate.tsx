@@ -5,13 +5,14 @@ import SoftBackdrop from "../components/SoftBackdrop";
 import AspectRatioSelector from "../components/AspectRatioSelector";
 import StyleSelector from "../components/StyleSelector";
 import ColorSchemeSelector from "../components/ColorSchemeSelector";
-import { Sparkles, BarChart3, Download, Share2 } from "lucide-react";
+import { Sparkles, BarChart3, Download, Share2, Trash2 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 
 const Generate = () => {
     const { id } = useParams();
     const { token, isAuthenticated } = useAppContext();
     const navigate = useNavigate();
+    const isDetailsView = Boolean(id);
 
     const [title, setTitle] = useState('');
     const [additionalDetails, setAdditionalDetails] = useState('');
@@ -25,8 +26,40 @@ const Generate = () => {
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login');
+            return;
         }
-    }, [isAuthenticated, navigate]);
+
+        if (id) {
+            fetchThumbnailDetails(id);
+        }
+    }, [id, isAuthenticated, navigate, token]);
+
+    const fetchThumbnailDetails = async (thumbnailId: string) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`http://127.0.0.1:5001/api/thumbnails/${thumbnailId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+            if (result.success) {
+                setThumbnail(result.data);
+                setTitle(result.data.title || '');
+                setStyle(result.data.style || style);
+                SetAspectRatio(result.data.aspectRatio || aspectRatio);
+            } else {
+                alert('Could not load thumbnail details: ' + result.message);
+                navigate('/my-generation');
+            }
+        } catch (error) {
+            console.error('Detail load error:', error);
+            alert('Failed to load thumbnail details.');
+            navigate('/my-generation');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleGenerate = async () => {
         if (!title) return alert("Please enter a title");
@@ -112,8 +145,8 @@ const Generate = () => {
                                     </div>
                                 </div>
 
-                                {/* BUTTON */}
-                                {!id && (
+                                                {/* BUTTON */}
+                                {!isDetailsView && (
                                     <button 
                                         onClick={handleGenerate}
                                         disabled={loading}
@@ -173,7 +206,7 @@ const Generate = () => {
                                                 </div>
                                                 <span className="text-sm font-medium text-zinc-400">Quality Score</span>
                                             </div>
-                                            <div className="text-3xl font-bold text-white">{thumbnail.metrics.colorfulness.toFixed(0)}/100</div>
+                                            <div className="text-3xl font-bold text-white">{Math.round(thumbnail.metrics?.colorfulness || 0)}/100</div>
                                             <p className="text-xs text-zinc-500 mt-1">Color balance & impact</p>
                                         </div>
 
@@ -187,6 +220,37 @@ const Generate = () => {
                                                 Share
                                             </button>
                                         </div>
+                                        {isDetailsView && (
+                                            <div className="grid grid-cols-1 gap-3">
+                                                <button
+                                                    onClick={() => {
+                                                        if (!thumbnail?._id) return;
+                                                        if (!window.confirm('Delete this saved thumbnail?')) return;
+
+                                                        fetch(`http://127.0.0.1:5001/api/thumbnails/${thumbnail._id}`, {
+                                                            method: 'DELETE',
+                                                            headers: { 'Authorization': `Bearer ${token}` }
+                                                        })
+                                                            .then((res) => res.json())
+                                                            .then((result) => {
+                                                                if (result.success) {
+                                                                    navigate('/my-generation');
+                                                                } else {
+                                                                    alert('Delete failed: ' + result.message);
+                                                                }
+                                                            })
+                                                            .catch((error) => {
+                                                                console.error('Delete error:', error);
+                                                                alert('Could not delete thumbnail.');
+                                                            });
+                                                    }}
+                                                    className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 font-medium transition-all"
+                                                >
+                                                    <Trash2 className="size-5" />
+                                                    Delete Thumbnail
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             ) : (

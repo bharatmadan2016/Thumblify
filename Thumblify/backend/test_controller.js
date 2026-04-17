@@ -26,7 +26,7 @@ async function testController() {
     try {
         await generateThumbnail(req, res);
     } catch (error) {
-        console.error("🔥 Controller Exploded:", error);
+        console.error("Controller Exploded:", error);
     }
 }
 

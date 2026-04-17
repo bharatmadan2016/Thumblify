@@ -11,9 +11,9 @@ async function testText() {
             model: "gemini-1.5-flash", // Use a standard text model
             contents: "Say hello",
         });
-        console.log("✅ Text success:", response.candidates[0].content.parts[0].text);
+        console.log("Text success:", response.candidates[0].content.parts[0].text);
     } catch (error) {
-        console.error("❌ Text failed:", error);
+        console.error("Text failed:", error);
     }
 }
 

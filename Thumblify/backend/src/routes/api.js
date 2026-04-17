@@ -1,5 +1,5 @@
 import express from 'express';
-import { generateThumbnail, getCommunityThumbnails, getUserThumbnails } from '../controllers/thumbnail.controller.js';
+import { generateThumbnail, getCommunityThumbnails, getUserThumbnails, getThumbnailById, deleteThumbnail } from '../controllers/thumbnail.controller.js';
 import { submitReview, getReviews } from '../controllers/review.controller.js';
 import { register, login, googleLogin } from '../controllers/user.controller.js';
 import auth from '../middlewares/auth.js';
@@ -15,6 +15,8 @@ router.post('/auth/google', googleLogin);
 router.post('/thumbnails/generate', auth, generateThumbnail);
 router.get('/thumbnails/my', auth, getUserThumbnails);
 router.get('/thumbnails/community', getCommunityThumbnails);
+router.get('/thumbnails/:id', auth, getThumbnailById);
+router.delete('/thumbnails/:id', auth, deleteThumbnail);
 
 // Review Routes
 router.post('/reviews', submitReview);

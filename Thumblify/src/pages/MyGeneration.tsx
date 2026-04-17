@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SoftBackdrop from "../components/SoftBackdrop";
 import { useAppContext } from "../context/AppContext";
-import { BarChart3, Download, ExternalLink } from "lucide-react";
+import { BarChart3, Download, ExternalLink, Trash2 } from "lucide-react";
 
 const MyGeneration = () => {
     const { token, isAuthenticated } = useAppContext();
@@ -36,6 +36,27 @@ const MyGeneration = () => {
         }
     };
 
+    const handleDelete = async (id: string) => {
+        const confirmed = window.confirm('Delete this thumbnail permanently?');
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`http://127.0.0.1:5001/api/thumbnails/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const result = await response.json();
+            if (result.success) {
+                setThumbnails((current) => current.filter((item) => item._id !== id));
+            } else {
+                alert('Failed to delete thumbnail: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Could not delete thumbnail.');
+        }
+    };
+
     return (
         <>
             <SoftBackdrop />
@@ -64,6 +85,9 @@ const MyGeneration = () => {
                                             <a href={item.imageUrl} download target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-black/60 text-white hover:bg-black/80">
                                                 <Download className="size-4" />
                                             </a>
+                                            <button onClick={() => handleDelete(item._id)} className="p-2 rounded-lg bg-black/60 text-white hover:bg-black/80">
+                                                <Trash2 className="size-4" />
+                                            </button>
                                         </div>
                                     </div>
                                     <div className="p-5">
@@ -77,7 +101,7 @@ const MyGeneration = () => {
                                             <span className="text-[10px] text-zinc-500">{new Date(item.createdAt).toLocaleDateString()}</span>
                                         </div>
                                         <button 
-                                            onClick={() => navigate(`/generate`)}
+                                            onClick={() => navigate(`/generate/${item._id}`)}
                                             className="mt-4 w-full py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm transition-all flex items-center justify-center gap-2"
                                         >
                                             <ExternalLink className="size-3" />

@@ -1,10 +1,18 @@
 import { useState, useEffect } from "react";
 import SoftBackdrop from "../components/SoftBackdrop";
 import { Sparkles, ArrowRight, BarChart3 } from "lucide-react";
+import { dummyThumbnails } from "../assets/assets";
 
 const Community = () => {
     const [thumbnails, setThumbnails] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const featuredThumbnails = dummyThumbnails.slice(0, 4).map((thumb, index) => ({
+        ...thumb,
+        imageUrl: thumb.image_url || thumb.image_url,
+        ctrScore: [9.1, 8.4, 7.9, 9.7][index] ?? 8.5,
+        _id: thumb._id || `asset-${index}`,
+    }));
 
     useEffect(() => {
         fetchThumbnails();
@@ -23,6 +31,8 @@ const Community = () => {
                 setLoading(false);
             }
         };
+
+    const displayedThumbnails = [...featuredThumbnails, ...thumbnails];
 
     return (
         <>
@@ -50,11 +60,11 @@ const Community = () => {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {thumbnails.map((thumb) => (
+                            {displayedThumbnails.map((thumb) => (
                                 <div key={thumb._id} className="group relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:border-white/20 transition-all duration-300">
                                     <div className="aspect-video overflow-hidden">
                                         <img 
-                                            src={thumb.imageUrl} 
+                                            src={thumb.imageUrl || thumb.image_url} 
                                             alt={thumb.title} 
                                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                         />
@@ -64,7 +74,7 @@ const Community = () => {
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2 text-emerald-400">
                                                 <BarChart3 className="size-4" />
-                                                <span className="text-sm font-bold">{thumb.ctrScore}% CTR</span>
+                                                <span className="text-sm font-bold">{thumb.ctrScore ?? 8.2}% CTR</span>
                                             </div>
                                             <button className="text-zinc-400 group-hover:text-white transition-colors">
                                                 <ArrowRight className="size-5" />
